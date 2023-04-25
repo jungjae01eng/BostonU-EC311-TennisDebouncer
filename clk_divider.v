@@ -12,13 +12,14 @@
 module clk_divider(
 	input clk_in,
 	input rst,
+	input [21:0] toggle_value,
 	output reg divided_clk
     );
 	 
-parameter toggle_value = 27'b101111101011110000100000000;
+//parameter toggle_value = 22'b1101011110000100000000;
 
 	 
-reg[26:0] cnt;
+reg[21:0] cnt;
 
 always@(posedge clk_in or posedge rst)
 begin

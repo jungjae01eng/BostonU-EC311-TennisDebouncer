@@ -35,19 +35,22 @@ module ball_testbench(
     initial 
         begin 
             clk = 0;
-            forever #2 clk = ~clk;
+            forever #2 clk = ~clk; 
         end
+ 
         
      initial 
         begin
             reset = 1; right_trigger = 1; left_trigger = 0;
-            #2 reset = 0; right_trigger = 0;
-            #68 left_trigger = ~left_trigger;
-            #2 left_trigger = 0;
-            #68 right_trigger = ~right_trigger; left_trigger = ~left_trigger;
+            #1 reset = 0; 
+            #50 right_trigger = 0;
             
-            #68 right_trigger = ~right_trigger; left_trigger = ~left_trigger;
-            #68 right_trigger = ~right_trigger; left_trigger = ~left_trigger;
+//            #68 left_trigger = ~left_trigger;
+//            #2 left_trigger = 0;
+//            #68 right_trigger = ~right_trigger; left_trigger = ~left_trigger;
+            
+//            #68 right_trigger = ~right_trigger; left_trigger = ~left_trigger;
+//            #68 right_trigger = ~right_trigger; left_trigger = ~left_trigger;
         end
         
 
