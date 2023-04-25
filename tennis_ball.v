@@ -22,69 +22,218 @@
 
 module tennis_ball(
         input clk,
+        //input newclk,
         input reset,
+        input clkreset,
         input right_trigger,
         input left_trigger,
         output reg [15:0] ball
     );
     
-    reg [3:0] location;
-    reg direction; // 0 = right -> left direction; 1 = right -> left direction;
-    reg game_on;
+    
+    clk_divider cd(.clk_in(clk), .rst(clkreset), .toggle_value(toggle_val), .divided_clk(newclock));
+    
+    //reg [4:0] location;
+    reg direction; // 1 = left direction; 0 = right direction;
+    wire newclock;
+    reg game_off;
+    reg player;
+    reg [1:0] right_miss;
+    reg [1:0] left_miss;
+    reg [1:0] right_win;
+    reg [1:0] left_win;
+    reg [21:0] toggle_val = 22'b1101011110000100000000;
+    
+//    always@ (posedge newclock or posedge reset)
+//        begin
+//            if(reset == 1)
+//                begin
+//                    ball = 16'b0000000000000001;
+//                    game_off = 1;
+//                    direction = 1;
+//                    player = 1;
+//                    right_miss = 0;
+//                    left_miss = 0;  
+//                    right_win = 0;
+//                    left_win = 0;
+//                end
+//            else
+//                begin
+//                    if(direction == 1)
+//                        begin
+//                            if(right_trigger)
+//                                game_off = 0;
+//                        end
+//                    else if(direction == 0)
+//                        begin
+//                            if(left_trigger)
+//                                game_off = 0;
+//                        end
+                                        
+//                end   
+//        end
+    
+    
+    
+    
+    always@ (posedge newclock or posedge reset)
+            begin
+                if(reset == 1)
+                    begin
+                        ball = 16'b0000000000000001;
+                        game_off = 1;
+                        direction = 1;
+                        player = 1;
+                        right_miss = 0;
+                        left_miss = 0;  
+                        right_win = 0;
+                        left_win = 0;
+                        toggle_val = 22'b1101011110000100000000;
+                    end
+                else
+                    begin
+                        if(game_off == 0)
+                            begin
+                                if(direction == 1)
+                                    begin
+                                        if(ball == 16'b1000000000000000)
+                                            begin
+                                            if(left_trigger == 0)
+                                                begin
+                                                    player = ~player;
+                                                    game_off = 1;
+                                                    right_win = right_win + 1;
+                                                end
+                
+                                            direction = 0;
+                                            toggle_val = toggle_val - 22'b1111111111111;
+                                            end
+                                        else
+//                                            if(left_trigger == 1)
+//                                                begin
+//                                                    left_miss = left_miss + 1;
+//                                                end                       
+                                            ball = ball << 1;
+                                    end
+                                else 
+                                    begin
+                                        if(ball == 16'b0000000000000001)
+                                            begin
+                                            if(right_trigger == 0)
+                                                begin
+                                                    player = ~player;
+                                                    game_off = 1;
+                                                    left_win = left_win + 1;
+                                                end
+                                                direction = 1'b1; 
+                                                toggle_val = toggle_val - 22'b1111111111111;
+                                          end
+                                       else       
+//                                            if(right_trigger == 1)
+//                                                begin
+//                                                    right_miss = right_miss + 1;
+//                                                end                        
+                                            ball = ball >> 1;
+                                  end
+                            end                         
+                        else   
+                            begin
+                                if(right_win == 3)
+                                    ball = 16'b0000100000000001;
+                                else if(left_win == 3)
+                                    ball = 16'b0100000000010000;
+                                else
+                                    toggle_val = 22'b1101011110000100000000;
+                                    if(direction == 1)
+                                        begin
+                                            if(right_trigger == 1)
+                                            game_off = 0;
+                                        end
+                                    else if (direction == 0)
+                                        begin
+                                            if(left_trigger == 1)
+                                            game_off = 0;
+                                        end
+                                                            
+                           end   
+                                    
+//                                direction = player;
+//                                if(direction == 0)
+//                                    ball = 16'b0000000000000001;
+                   end
+        end
 
-        always@ (posedge clk)
-        begin
-            if(reset == 1) begin
-                location <= 0;
-                ball[0] <= 1;
-                game_on <= 0;
-            end
-            else if(right_trigger == 1) begin
-                location <= 0;
-                ball[0] <= 1;
-                direction <= 0;
-                game_on <= 1;
-            end
-            else if(left_trigger == 1) begin
-                location <= 15;
-                ball[15] <= 1;
-                direction <= 1;
-                game_on <= 1;
-            end
-            
-            if(game_on == 1) begin 
-                case(direction)
-                    0: location <= location + 1;    
-                    1: location <= location - 1;
-//                    default: ;
-                endcase
+
+        
+
+       
                         
-                case(location)
-                     0: begin
-                        ball <= 16'b0000000000000001;
-                        direction <= 0;
-                        end
-                     1: ball <= 16'b0000000000000010;
-                     2: ball <= 16'b0000000000000100;
-                     3: ball <= 16'b0000000000001000;
-                     4: ball <= 16'b0000000000010000;
-                     5: ball <= 16'b0000000000100000;
-                     6: ball <= 16'b0000000001000000;
-                     7: ball <= 16'b0000000010000000;
-                     8: ball <= 16'b0000000100000000;
-                     9: ball <= 16'b0000001000000000;
-                     10: ball <= 16'b0000010000000000;
-                     11: ball <= 16'b0000100000000000;
-                     12: ball <= 16'b0001000000000000;
-                     13: ball <= 16'b0010000000000000;
-                     14: ball <= 16'b0100000000000000;
-                     15: begin
-                        ball <= 16'b1000000000000000;
-                        direction <= 1;
-                        end
-                     default: ball <= 16'b0000000000000000;
-                endcase
-            end
-//        end // inner nested
-        end // outer nested        
+                        
+       
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+       
+
+//        always@ (posedge clk or posedge reset)
+//            begin
+//                if(reset)
+//                    begin
+//                        ball = 16'b0000000000000001;
+//                        game_off = 0;
+//                        direction = 1;
+//                        player = 1;
+//                    end
+//                else
+//                    begin 
+//                        if(game_off == 0)
+//                            begin
+//                                ;
+//                            end 
+//                        else
+//                            if(direction == 1)
+//                                begin  
+//                                    if(left_trigger)
+//                                        begin
+//                                            game_off = 0;
+//                                        end    
+//                                    else
+//                                        if(right_trigger)
+//                                            begin
+//                                                game_off = 0;
+//                                            end
+////                            begin
+////                                if(direction == 1'b1)
+////                                    begin
+////                                        if(left_trigger == 0)
+////                                            begin    
+////                                                player = ~player;
+////                                                game_off = 1;
+////                                                right_win = right_win + 1;
+////                                            end
+////                                            right_miss = 0;
+////                                            left_miss = 0;
+////                                    end
+////                                        else
+////                                            begin
+////                                                left
+                                            
+//                             end
+//                         end       
+//                    end
+       
+                        
+                      
 endmodule

@@ -40,24 +40,23 @@ reg [20:0] PB_cnt;
 // When the push-button is pushed or released, we increment the counter
 // The counter has to be maxed out before we decide that the push-button state has changed
 
-wire PB_idle = (PB_state == PB_sync_1);
+wire PB_idle = (PB_state==PB_sync_1);
 wire PB_cnt_max = &PB_cnt;	// true when all bits of PB_cnt are 1's
 
 always @(posedge clk)
-    if(reset) begin
-        PB_state <= 0;
-    end
-    else if(PB_idle) begin
-        PB_cnt <= 0;  // nothing's going on
-    end
-    else begin
-        PB_state <= PB;
-        PB_cnt <= PB_cnt + 21'd1;  // something's going on, increment the counter
-        if(PB_cnt_max) PB_state <= ~PB_state;  // if the counter is maxed out, PB changed!
-        if(~PB_state)
-            PB_cnt <=0;
-    end
+if(reset)
+    PB_state <= 0;
+else if(PB_idle)
+    PB_cnt <= 0;  // nothing's going on
+else
+begin
+    PB_state <= PB;
+    PB_cnt <= PB_cnt + 21'd1;  // something's going on, increment the counter
+    if(PB_cnt_max) PB_state <= ~PB_state;  // if the counter is maxed out, PB changed!
+    if(~PB_state)
+        PB_cnt <=0;
+end
 
-    assign PB_down = ~PB_idle & PB_cnt_max & ~PB_state;
-    assign PB_up   = ~PB_idle & PB_cnt_max &  PB_state;
+assign PB_down = ~PB_idle & PB_cnt_max & ~PB_state;
+assign PB_up   = ~PB_idle & PB_cnt_max &  PB_state;
 endmodule
