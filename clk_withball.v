@@ -45,7 +45,7 @@ module clk_withball(
     //Debouncer left_button(.clk(clk), .PB(left_trigger), .PB_state(PB_stateleft), .PB_down(PB_downleft), .PB_up(PB_upleft), .reset(reset));
    // Debouncer right_button(.clk(clk), .PB(right_trigger), .PB_state(PB_stateright), .PB_down(PB_downright), .PB_up(PB_upright), .reset(reset));
     
-    tennis_ball object1(.clk(clk), .reset(reset), .ball(ball), .left_trigger(left_trigger), .right_trigger(right_trigger));
+//    tennis_ball object1(.clk(clk), .reset(reset), .ball(ball), .left_trigger(left_trigger), .right_trigger(right_trigger));
     
 endmodule
 
