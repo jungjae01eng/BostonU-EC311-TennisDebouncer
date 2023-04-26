@@ -35,11 +35,11 @@ SevenSegmentLED SevenSegmentLED(.clk(clk),.rst(rst),.AN_In(AN_In),.C_In(C_In),.A
 
 always @ (*) begin
     if(rst) begin
-//        AN_In <= 8'h0;
+        AN_In <= 8'h0;
         C_In <= 64'h0;
     end
     else begin
-//        AN_In <= 8'b00111110;
+        AN_In <= 8'b00111110;
         C_In <= {7'd0,7'd0,FOUR, FIVE, THREE,ONE,ONE,7'd0};
     end
 end

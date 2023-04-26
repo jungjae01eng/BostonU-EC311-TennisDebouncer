@@ -9,8 +9,6 @@
 // You have to decide what should be the value of toggle_value to be able make the slow down
 // the clock to 1 Hz. X ms will be depend on your toggle_value choice.
 //////////////////////////////////////////////////////////////////////////////////
-
-
 module clk_divider(
 	input clk_in,
 	input rst,
@@ -23,7 +21,8 @@ module clk_divider(
 	 
 reg[21:0] cnt;
 
-always@(posedge clk_in or posedge rst) begin
+always@(posedge clk_in or posedge rst)
+begin
 	if (rst==1) begin
 		cnt <= 0;
 		divided_clk <= 0;
@@ -40,5 +39,8 @@ always@(posedge clk_in or posedge rst) begin
 	end
 
 end
+			  
+	
+
 
 endmodule
