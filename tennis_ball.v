@@ -1,9 +1,9 @@
 `timescale 1ns / 1ps
 //////////////////////////////////////////////////////////////////////////////////
-// Company: 
-// Engineer: 
+// Company: Boston University College of Engineering
+// Engineer: Ivan G., Jungjae L.
 // 
-// Create Date: 04/14/2023 12:25:47 PM
+// Create Date: 04/12/2023 12:25:47 PM
 // Design Name: 
 // Module Name: tennis_ball
 // Project Name: 
@@ -22,7 +22,6 @@
 
 module tennis_ball(
         input clk,
-        //input newclk,
         input reset,
         input clkreset,
         input right_trigger,
@@ -64,228 +63,224 @@ module tennis_ball(
     reg [55:0] C_In;
        
     
-    always@ (posedge newclock or posedge reset)
-            begin
-                if(reset == 1)
-                    begin
-                        ball = 16'b0000000000000001;
-                        game_off = 1;
-                        direction = 1;
-                        player = 1;
-                        right_miss = 0;
-                        left_miss = 0;  
-                        right_win = 0;
-                        left_win = 0;
-                        toggle_val = 22'b1101011110000100000000;
-//                        AN_In <= 8'h0;
-//                        C_In <= 64'h0;
-                        AN_In <= 8'b10000001;
-                        C_In <= {numbers[7*(9-left_win)+:7], 7'd0, 7'd0, 7'd0, 7'd0, 7'd0, 7'd0, numbers[7*(9-right_win)+:7]};
-                    end
-                else
-                    begin
-                        if(squash_switch == 0) // if squash switch is off
-                            begin
-                            if(game_off == 0)
-                                begin
-                                    if(direction == 1)
-                                        begin
-                                            if(ball == 16'b1000000000000000 && game_off == 0)
-                                                begin
-                                                if(PB_left == 0)
-                                                    begin
-                                                        player = ~player;
-                                                        game_off = 1;
-                                                        right_win = right_win + 1;
-                                                        AN_In <= 8'b10000001;
-                                                        C_In <= {numbers[7*(9-left_win)+:7], 7'd0, 7'd0, 7'd0, 7'd0, 7'd0, 7'd0, numbers[7*(9-right_win)+:7]};
-                                                    end
-                                                right_miss = 0;
-                                                left_miss = 0;
-                                                direction = 0;
-                                                toggle_val = toggle_val - 22'b11111111111111111;
-                                                end
-                                            else               
-                                            //set this to be the cpu for squash                                                    
-                                                    ball = ball << 1;
-                                                    
-                                                    
-                                                    if(left_miss == 3)
-                                                        begin
-                                                            player = ~player;
-                                                            game_off = 1;
-                                                            right_win = right_win + 1;
-                                                            ball = 16'b0000000000000001;
-                                                            direction = 1'b1;
-    //                                                        if(left_win > 0)
-    //                                                            left_win = left_win - 1;
-                                                                
-                                                            AN_In <= 8'b10000001;
-                                                            C_In <= {numbers[7*(9-left_win)+:7], 7'd0, 7'd0, 7'd0, 7'd0, 7'd0, 7'd0, numbers[7*(9-right_win)+:7]};
-                                                        end     
-                                                    if(PB_left == 1)
-                                                            left_miss = left_miss + PB_left;       
-                                                    
-                                        end
-                                    else 
-                                        begin
-                                            if(ball == 16'b0000000000000001 && game_off == 0)
-                                                begin
-                                                if(PB_right == 0)
-                                                    begin
-                                                        player = ~player;
-                                                        game_off = 1;
-                                                        left_win = left_win + 1;
-                                                        AN_In <= 8'b10000001;
-                                                        C_In <= {numbers[7*(9-left_win)+:7], 7'd0, 7'd0, 7'd0, 7'd0, 7'd0, 7'd0, numbers[7*(9-right_win)+:7]};
-                                                    end
-                                                    direction = 1'b1; 
-                                                    right_miss = 0;
-                                                    left_miss = 0;
-                                                    toggle_val = toggle_val - 22'b11111111111111111;
-                                              end
-                                           else                                                                     
-                                                    
-                                                    ball = ball >> 1;
-                                                        
-                                                    
-                                                    if(right_miss == 3)
-                                                        begin
-                                                            player = ~player;
-                                                            game_off = 1;
-                                                            left_win = left_win + 1;
-                                                            ball = 16'b1000000000000000;
-    //                                                        if(right_win > 0)
-    //                                                            right_win = right_win - 1;
-                                                            
-                                                                
-                                                            direction = 1'b0;
-                                                            AN_In <= 8'b10000001;
-                                                            C_In <= {numbers[7*(9-left_win)+:7], 7'd0, 7'd0, 7'd0, 7'd0, 7'd0, 7'd0, numbers[7*(9-right_win)+:7]};
-                                                        end
-                                                   if(PB_right == 1)
-                                                            right_miss = right_miss + PB_right;
-                                                    
-                                      end
-                                end                         
-                            else   
-                                begin
-                                    if(right_win == 3)
-                                        begin
-                                            ball = 16'b1000000000000000;
-                                            direction = 1'b0;
-                                            left_win = 0;
-                                            right_win = 0;
-                                            AN_In <= 8'b00011000;
-                                            C_In <= {7'd0, 7'd0, 7'd0, char[0+:7], numbers[7*(9-2)+:7], 7'd0, 7'd0, 7'd0};
-                                        end
-                                    else if(left_win == 3)
-                                        begin
-                                            ball = 16'b0000000000000001;
-                                            direction = 1'b1;
-                                            left_win = 0;
-                                            right_win = 0;
-                                            AN_In <= 8'b00011000;
-                                            C_In <= {7'd0, 7'd0, 7'd0, char[0+:7], numbers[7*(9-1)+:7], 7'd0, 7'd0, 7'd0};
-                                        end
-                                    else
-                                        //toggle_val = 22'b1101011110000100000000;
-                                        if(direction == 1)
-                                            begin
-                                                if(PB_right == 1)
-                                                    begin
-                                                        game_off = 0;
-                                                        toggle_val = 22'b1101011110000100000000;
-                                                    end
-                                            end
-                                        else if (direction == 0)
-                                            begin
-                                                if(PB_left == 1)
-                                                    begin
-                                                        game_off = 0;
-                                                        toggle_val = 22'b1101011110000100000000;
-                                                    end
-                                            end
-                                                                
-                                   end   
-                                        
+    always@ (posedge newclock or posedge reset) begin
+        if(reset == 1) begin
+            ball = 16'b0000000000000001;
+            game_off = 1;
+            direction = 1;
+            player = 1;
+            right_miss = 0;
+            left_miss = 0;  
+            right_win = 0;
+            left_win = 0;
+            toggle_val = 22'b1101011110000100000000;
+            AN_In <= 8'b10000001;
+            C_In <= {numbers[7*(9-left_win)+:7], 7'd0, 7'd0, 7'd0, 7'd0, 7'd0, 7'd0, numbers[7*(9-right_win)+:7]};
+        end
+        else begin
+            if(squash_switch == 0) begin // if squash switch is off
+                if(game_off == 0) begin
+                    if(direction == 1) begin
+                        if(ball == 16'b1000000000000000 && game_off == 0) begin
+                            if(PB_left == 0) begin
+                                player = ~player;
+                                game_off = 1;
+                                right_win = right_win + 1;
+                                AN_In <= 8'b10000001;
+                                C_In <= {numbers[7*(9-left_win)+:7], 7'd0, 7'd0, 7'd0, 7'd0, 7'd0, 7'd0, numbers[7*(9-right_win)+:7]};
                             end
-                        else // if squash switch is on
+                            right_miss = 0;
+                            left_miss = 0;
+                            direction = 0;
+                            toggle_val = toggle_val - 22'b11111111111111111;
+                        end
+                        else
+                        //set this to be the cpu for squash                                                    
+                            ball = ball << 1;
+                            
+                            if(left_miss == 3) begin
+                                player = ~player;
+                                game_off = 1;
+                                right_win = right_win + 1;
+                                ball = 16'b0000000000000001;
+                                direction = 1'b1;
+                                AN_In <= 8'b10000001;
+                                C_In <= {numbers[7*(9-left_win)+:7], 7'd0, 7'd0, 7'd0, 7'd0, 7'd0, 7'd0, numbers[7*(9-right_win)+:7]};
+                            end
+                            if(PB_left == 1) begin
+                                left_miss = left_miss + PB_left;
+                            end
+                        end
+                        else begin
+                            if(ball == 16'b0000000000000001 && game_off == 0)
+                                begin
+                                if(PB_right == 0)
+                                    begin
+                                        player = ~player;
+                                        game_off = 1;
+                                        left_win = left_win + 1;
+                                        AN_In <= 8'b10000001;
+                                        C_In <= {numbers[7*(9-left_win)+:7], 7'd0, 7'd0, 7'd0, 7'd0, 7'd0, 7'd0, numbers[7*(9-right_win)+:7]};
+                                    end
+                                    direction = 1'b1; 
+                                    right_miss = 0;
+                                    left_miss = 0;
+                                    toggle_val = toggle_val - 22'b11111111111111111;
+                              end
+                          else                                                                     
+                                        
+                                ball = ball >> 1;
+                                    
+                                
+                                if(right_miss == 3)
+                                    begin
+                                        player = ~player;
+                                        game_off = 1;
+                                        left_win = left_win + 1;
+                                        ball = 16'b1000000000000000;
+                                        direction = 1'b0;
+                                        AN_In <= 8'b10000001;
+                                        C_In <= {numbers[7*(9-left_win)+:7], 7'd0, 7'd0, 7'd0, 7'd0, 7'd0, 7'd0, numbers[7*(9-right_win)+:7]};
+                                    end
+                               if(PB_right == 1)
+                                        right_miss = right_miss + PB_right;
+                                        
+                          end
+                    end
+                else   
+                    begin
+                        if(right_win == 3)
                             begin
-                                if(game_off == 0)
-                                    begin
-                                        if(direction == 1)
-                                            begin
-                                                if(ball == 16'b1000000000000000 && game_off == 0)
-                                                    begin                                                        
-                                                        direction = 0;
-                                                    end
-                                                else               
-                                                        ball = ball << 1;                                                        
-                                                        
-                                            end
-                                        else 
-                                            begin
-                                                if(ball == 16'b0000000000000001 && game_off == 0)
-                                                    begin
-                                                    if(PB_right == 0)
-                                                        begin
-                                                            game_off = 1;;         
-                                                        end
-                                                        direction = 1'b1;
-                                                        //if (right <= 9 )
-                                                                //if(right wins > 9)
-                                                                    // 
-                                                        right_win = right_win + 1;
-                                                        //check right win here
-                                                        right_miss = 0;
-                                                        AN_In <= 8'b00000001;
-                                                        C_In <= {7'd0, 7'd0, 7'd0, 7'd0, 7'd0, 7'd0, 7'd0, numbers[7*(9-right_win)+:7]};
-                                                        toggle_val = toggle_val - 22'b11111111111111111;
-                                                   end
-                                               else                                                                     
-                                                        ball = ball >> 1;
-                                                                                                           
-                                                        if(right_miss == 3)
-                                                        //check misses
-                                                            begin
-                                                                game_off = 1;
-                                                                ball = 16'b0000000000000001;
-                                                                direction = 1'b1;
-                                                                AN_In <= 8'b00000001;
-                                                                C_In <= {7'd0, 7'd0, 7'd0, 7'd0, 7'd0, 7'd0, 7'd0, numbers[7*(9-right_win)+:7]};
-                                                            end
-                                                       if(PB_right == 1)
-                                                                right_miss = right_miss + PB_right;
-                                                        
-                                          end
-                                    end                         
-                                else   
-                                    begin
-                                            if(direction == 1)
-                                                begin
-                                                    if(PB_right == 1)
-                                                        begin
-                                                            game_off = 0;
-                                                            right_win = 0;
-                                                            toggle_val = 22'b1101011110000100000000;
-                                                        end
-                                                end
-                                            else if (direction == 0)
-                                                begin
-                                                    if(PB_left == 1)
-                                                        begin
-                                                            game_off = 0;
-                                                            right_win = 0;
-                                                            toggle_val = 22'b1101011110000100000000;
-                                                        end
-                                                end
-                                                                    
-                                       end   
+                                ball = 16'b1000000000000000;
+                                direction = 1'b0;
+                                left_win = 0;
+                                right_win = 0;
+                                AN_In <= 8'b00011000;
+                                C_In <= {7'd0, 7'd0, 7'd0, char[0+:7], numbers[7*(9-2)+:7], 7'd0, 7'd0, 7'd0};
+                            end
+                        else if(left_win == 3)
+                            begin
+                                ball = 16'b0000000000000001;
+                                direction = 1'b1;
+                                left_win = 0;
+                                right_win = 0;
+                                AN_In <= 8'b00011000;
+                                C_In <= {7'd0, 7'd0, 7'd0, char[0+:7], numbers[7*(9-1)+:7], 7'd0, 7'd0, 7'd0};
+                            end
+                        else
+                            //toggle_val = 22'b1101011110000100000000;
+                            if(direction == 1)
+                                begin
+                                    if(PB_right == 1)
+                                        begin
+                                            game_off = 0;
+                                            toggle_val = 22'b1101011110000100000000;
+                                        end
+                                end
+                            else if (direction == 0)
+                                begin
+                                    if(PB_left == 1)
+                                        begin
+                                            game_off = 0;
+                                            toggle_val = 22'b1101011110000100000000;
+                                        end
+                                end
+                                                    
+                       end   
+                            
+                end
+            else // if squash switch is on
+                begin
+                    if(game_off == 0)
+                        begin
+                            if(direction == 1)
+                                begin
+                                    if(ball == 16'b1000000000000000 && game_off == 0)
+                                        begin                                                        
+                                            direction = 0;
+                                        end
+                                    else               
+                                            ball = ball << 1;                                                        
                                             
                                 end
-                        end
-                   end
-                        
-                      
+                            else 
+                                begin
+                                    if(ball == 16'b0000000000000001 && game_off == 0)
+                                        begin
+                                        if(PB_right == 0)
+                                            begin
+                                                game_off = 1;       
+                                                direction = 1'b1;  
+                                            end
+                                        else
+                                            begin
+                                            direction = 1'b1;
+                                            right_win = right_win + 1;
+                                            right_miss = 0;
+                                            
+                                            if (right_win <= 9) begin
+                                                AN_In <= 8'b00000001;
+                                                C_In <= {7'd0, 7'd0, 7'd0, 7'd0, 7'd0, 7'd0, 7'd0, numbers[7*(9-right_win)+:7]};
+                                            end
+                                            else if(right_win > 9) begin
+                                                AN_In <= 8'b00000011;
+                                                C_In <= {7'd0, 7'd0, 7'd0, 7'd0, 7'd0, 7'd0, numbers[7*(9-(right_win/10))+:7], numbers[7*(9-(right_win%10))+:7]};
+                                            end
+                                           
+                                            //check right win here
+                                            
+                                            toggle_val = toggle_val - 22'b11111111111111111;
+                                            end
+                                       end
+                                   else                                                                     
+                                            ball = ball >> 1;
+                                                                                               
+                                            if(right_miss == 3)
+                                            //check misses
+                                                begin
+                                                    game_off = 1;
+                                                    ball = 16'b0000000000000001;
+                                                    direction = 1'b1;
+                                                    if (right_win <= 9) begin
+                                                        AN_In <= 8'b00000001;
+                                                        C_In <= {7'd0, 7'd0, 7'd0, 7'd0, 7'd0, 7'd0, 7'd0, numbers[7*(9-right_win)+:7]};
+                                                    end
+                                                    else if(right_win > 9) begin
+                                                        AN_In <= 8'b00000011;
+                                                        C_In <= {7'd0, 7'd0, 7'd0, 7'd0, 7'd0, 7'd0, numbers[7*(9-(right_win/10))+:7], numbers[7*(9-(right_win%10))+:7]};
+                                                    end
+                                                end
+                                           if(PB_right == 1)
+                                                    right_miss = right_miss + PB_right;
+                              end
+                        end                         
+                    else   
+                        begin
+                                if(direction == 1)
+                                    begin
+                                        if(PB_right == 1)
+                                            begin
+                                                game_off = 0;
+                                                right_win = 0;
+                                                AN_In <= 8'b00000001;
+                                                C_In <= {7'd0, 7'd0, 7'd0, 7'd0, 7'd0, 7'd0, 7'd0, numbers[7*(9-right_win)+:7]};
+                                                toggle_val = 22'b1101011110000100000000;
+                                            end
+                                    end
+                                else if (direction == 0)
+                                    begin
+                                        if(PB_left == 1)
+                                            begin
+                                                game_off = 0;
+                                                right_win = 0;
+                                                toggle_val = 22'b1101011110000100000000;
+                                            end
+                                    end
+                                                        
+                           end   
+                                
+                    end
+                end
+           end
+           
 endmodule
