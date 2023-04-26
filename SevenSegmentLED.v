@@ -1,12 +1,20 @@
 `timescale 1ns / 1ps
+//////////////////////////////////////////////////////////////////////////////////
+// Company: Boston University College of Engineering
+// Engineer: Ivan G., Jungjae L.
+// 
+// Create Date: 04/12/2023 01:52:47 PM
+// Module Name: SevenSegmentLED
+//////////////////////////////////////////////////////////////////////////////////
 
-module SevenSegmentLED(clk,rst,AN_In,C_In,AN_Out,C_Out);
-
-input clk,rst;
-input [55:0] C_In;
-input [7:0] AN_In;
-output reg [7:0] AN_Out;
-output reg [6:0] C_Out;
+module SevenSegmentLED(
+    input clk,
+    input rst,
+    input [55:0] C_In,
+    input [7:0] AN_In,
+    output reg [7:0] AN_Out,
+    output reg [6:0] C_Out
+    );
 
 reg [2:0] LEDCounter;
 

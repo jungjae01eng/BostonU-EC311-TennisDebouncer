@@ -4,21 +4,8 @@
 // Engineer: Ivan G., Jungjae L.
 // 
 // Create Date: 04/12/2023 12:25:47 PM
-// Design Name: 
 // Module Name: tennis_ball
-// Project Name: 
-// Target Devices: 
-// Tool Versions: 
-// Description: 
-// 
-// Dependencies: 
-// 
-// Revision:
-// Revision 0.01 - File Created
-// Additional Comments:
-// 
 //////////////////////////////////////////////////////////////////////////////////
-
 
 module tennis_ball(
         input clk,

@@ -1,24 +1,11 @@
 `timescale 1ns / 1ps
 //////////////////////////////////////////////////////////////////////////////////
-// Company: 
-// Engineer: 
+// Company: Boston University College of Engineering
+// Engineer: Ivan G., Jungjae L.
 // 
 // Create Date: 04/12/2023 01:52:47 PM
-// Design Name: 
 // Module Name: Debouncer
-// Project Name: 
-// Target Devices: 
-// Tool Versions: 
-// Description: 
-// 
-// Dependencies: 
-// 
-// Revision:
-// Revision 0.01 - File Created
-// Additional Comments:
-// 
 //////////////////////////////////////////////////////////////////////////////////
-
 
 module Debouncer(
     input clk,
