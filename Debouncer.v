@@ -26,8 +26,8 @@ module Debouncer(
     input reset,
     // from which we make three outputs, all synchronous to the clock
     output reg PB_state,  // 1 as long as the push-button is active (down)
-    output PB_up,   // 1 for one clock cycle when the push-button goes up (i.e. just released)
-    output PB_down  // 1 for one clock cycle when the push-button goes down (i.e. just pushed)
+    output PB_down,  // 1 for one clock cycle when the push-button goes down (i.e. just pushed)
+    output PB_up   // 1 for one clock cycle when the push-button goes up (i.e. just released)
 );
 
 // First use two flip-flops to synchronize the PB signal the "clk" clock domain
